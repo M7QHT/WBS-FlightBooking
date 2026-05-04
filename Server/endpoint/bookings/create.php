@@ -14,54 +14,58 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Validate required fields
-$required = ['flight_id', 'passenger_name', 'passport_number'];
-foreach ($required as $field) {
-    if (empty($data[$field])) {
-        sendError("Field '$field' is required.");
-    }
+$conn = getConnection();
+$user_id = $authUser['user_id'];
+
+if (empty($data['flight_id']) || empty($data['passengers']) || !is_array($data['passengers'])) {
+    sendError("flight_id and an array of passengers are required.", 400);
 }
 
-$conn          = getConnection();
-$flight_id     = (int) $data['flight_id'];
-$passenger     = $conn->real_escape_string($data['passenger_name']);
-$passport      = $conn->real_escape_string($data['passport_number']);
-$seat          = $conn->real_escape_string($data['seat_number'] ?? '');
-$user_id       = $authUser['user_id'];
+$flight_id = (int) $data['flight_id'];
+$pnr = isset($data['pnr']) ? $conn->real_escape_string($data['pnr']) : ('PNR-' . strtoupper(substr(md5(uniqid()), 0, 6)));
 
-// Check flight exists and has seats
+// Check flight
 $flight = $conn->query("SELECT * FROM flights WHERE id = $flight_id LIMIT 1")->fetch_assoc();
 if (!$flight) {
     sendError("Flight not found.", 404);
 }
-if ($flight['seats_available'] <= 0) {
-    sendError("No seats available for this flight.", 400);
+
+$passengersCount = count($data['passengers']);
+if ($flight['seats_available'] < $passengersCount) {
+    sendError("Not enough seats available. Only " . $flight['seats_available'] . " left.", 400);
 }
 
-// Insert booking
-$sql = "INSERT INTO bookings (user_id, flight_id, passenger_name, passport_number, seat_number)
-        VALUES ($user_id, $flight_id, '$passenger', '$passport', '$seat')";
+// Insert each passenger
+foreach ($data['passengers'] as $p) {
+    $passengerName = $conn->real_escape_string($p['name']);
+    $passport = $conn->real_escape_string($p['passport']);
+    $seat = $conn->real_escape_string($p['seat'] ?? '');
+    $baggage = $conn->real_escape_string($p['baggage'] ?? '20KG (Included)');
+    $price_paid = (float)($p['price_paid'] ?? $flight['price']);
 
-if (!$conn->query($sql)) {
-    sendError("Booking failed: " . $conn->error, 500);
+    if (empty($passengerName) || empty($passport)) {
+        sendError("Each passenger must have a name and passport number.", 400);
+    }
+
+    $sql = "INSERT INTO bookings (user_id, flight_id, pnr, passenger_name, passport_number, seat_number, baggage, price_paid)
+            VALUES ($user_id, $flight_id, '$pnr', '$passengerName', '$passport', '$seat', '$baggage', $price_paid)";
+
+    if (!$conn->query($sql)) {
+        sendError("Booking failed: " . $conn->error, 500);
+    }
 }
-
-$bookingId = $conn->insert_id;
 
 // Decrease seats
-$conn->query("UPDATE flights SET seats_available = seats_available - 1 WHERE id = $flight_id");
+$conn->query("UPDATE flights SET seats_available = seats_available - $passengersCount WHERE id = $flight_id");
 
 sendResponse([
     "message"    => "Booking confirmed successfully!",
-    "booking_id" => $bookingId,
+    "pnr"        => $pnr,
     "details"    => [
-        "passenger"     => $passenger,
-        "flight_number" => $flight['flight_number'],
-        "from"          => $flight['origin'] . " (" . $flight['origin_code'] . ")",
-        "to"            => $flight['destination'] . " (" . $flight['destination_code'] . ")",
-        "departure"     => $flight['departure_time'],
-        "price"         => $flight['price'],
-        "seat"          => $seat ?: "To be assigned"
+        "passengers_count" => $passengersCount,
+        "flight_number"    => $flight['flight_number'],
+        "from"             => $flight['origin'] . " (" . $flight['origin_code'] . ")",
+        "to"               => $flight['destination'] . " (" . $flight['destination_code'] . ")"
     ]
 ], 201);
 
