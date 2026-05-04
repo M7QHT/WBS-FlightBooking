@@ -37,8 +37,16 @@ function validateToken($token) {
 }
 
 function requireAuth() {
-    $headers = getallheaders();
-    $auth    = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+    // Compatibility for servers where getallheaders() is missing
+    $auth = '';
+    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $auth = $_SERVER['HTTP_AUTHORIZATION'];
+    } elseif (isset($_SERVER['Authorization'])) {
+        $auth = $_SERVER['Authorization'];
+    } elseif (function_exists('getallheaders')) {
+        $headers = getallheaders();
+        $auth = $headers['Authorization'] ?? $headers['authorization'] ?? '';
+    }
 
     if (!preg_match('/Bearer\s(\S+)/', $auth, $matches)) {
         http_response_code(401);
