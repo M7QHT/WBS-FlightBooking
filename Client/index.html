@@ -4,743 +4,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlightBook - Client UI</title>
+    <title>FlightBook — Find & Book Flights</title>
+    <meta name="description" content="Search and book flights worldwide with FlightBook. Best prices guaranteed.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #005ce6;
-            --secondary: #f4f7f9;
-            --success: #28a745;
-            --text-dark: #333;
+            --primary: #1a56db;
+            --primary-dark: #1142b0;
+            --primary-light: #e8eeff;
+            --accent: #38bdf8;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f0f4f8;
+            --surface: #ffffff;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --navy: #0f172a;
+            --radius: 12px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
         }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--secondary);
-            margin: 0;
-            padding: 0;
-            color: var(--text-dark);
-        }
-
+        /* ── HEADER ── */
         .header {
-            background-color: white;
-            padding: 15px 40px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: var(--navy);
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
         }
-
         .header h1 {
             margin: 0;
-            font-size: 24px;
-            color: var(--primary);
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
         }
-
-        .container {
-            max-width: 1450px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .dashboard-layout {
-            display: flex;
-            gap: 25px;
-            align-items: flex-start;
-        }
-
-        .nav-tabs {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            margin-left: 40px;
-            border-left: 2px solid #eee;
-            padding-left: 30px;
-            height: 100%;
-        }
-
+        .header h1 span { color: var(--accent); }
+        .nav-tabs { display: flex; gap: 4px; margin-left: 30px; }
         .nav-tab {
             background: none;
             border: none;
-            font-size: 16px;
-            font-weight: bold;
-            color: #777;
-            cursor: pointer;
-            padding: 20px 15px;
-            position: relative;
-            transition: 0.3s;
-            margin-top: -15px;
-            margin-bottom: -15px;
-        }
-
-        .nav-tab:hover {
-            color: var(--primary);
-        }
-
-        .nav-tab.active {
-            color: var(--primary);
-        }
-
-        .nav-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px 3px 0 0;
-        }
-
-        .bookings-panel {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-            padding: 30px;
-        }
-
-        .bookings-panel h2 {
-            font-size: 22px;
-            margin: 0 0 20px 0;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--secondary);
-            color: var(--text-dark);
-        }
-
-        .booking-item {
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-
-        .booking-item .b-route {
-            font-weight: bold;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-
-        .booking-item .b-detail {
-            color: #555;
-            margin: 2px 0;
-        }
-
-        .booking-item .b-badge {
-            display: inline-block;
-            margin-top: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            padding: 3px 8px;
-            border-radius: 20px;
-        }
-
-        .main-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .login-section {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            max-width: 400px;
-            margin: 100px auto;
-        }
-
-        .login-section input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #0044b3;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-        }
-
-        .flight-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            border: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .fc-col {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .fc-airline-block {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 22%;
-        }
-
-        .fc-time-block {
-            text-align: center;
-            width: 18%;
-        }
-
-        .fc-line {
-            color: #aaa;
-            font-size: 12px;
-            width: 10%;
-            text-align: center;
-        }
-
-        .fc-price-block {
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-            width: 15%;
-            text-align: right;
-        }
-
-        .fc-btn-block {
-            width: 15%;
-            text-align: right;
-        }
-
-        .notification {
-            display: none;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            background: #d4edda;
-            color: #155724;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 14px 22px;
-            border-radius: 10px;
-            font-weight: bold;
             font-size: 14px;
-            color: white;
-            z-index: 9999;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            pointer-events: none;
+            font-weight: 600;
+            color: rgba(255,255,255,0.65);
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
+        .nav-tab:hover { color: white; background: rgba(255,255,255,0.1); }
+        .nav-tab.active { color: white; background: var(--primary); }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* ── CONTAINER ── */
+        .container { max-width: 1400px; margin: 28px auto; padding: 0 24px; }
+        .dashboard-layout { display: flex; gap: 24px; align-items: flex-start; }
+        .main-content { flex: 1; min-width: 0; }
 
-        .toast.success {
-            background: #28a745;
-        }
-
-        .toast.error {
-            background: #dc3545;
-        }
-
-        .toast.info {
-            background: #005ce6;
-        }
-
-        /* Spinner */
-        .spinner {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #888;
-            padding: 20px 0;
-        }
-
-        .spinner-ring {
-            width: 22px;
-            height: 22px;
-            border: 3px solid #ddd;
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Filter Panel */
+        /* ── FILTER PANEL ── */
         .filter-panel {
-            width: 260px;
+            width: 270px;
             flex-shrink: 0;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-            padding: 20px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px;
             position: sticky;
-            top: 20px;
-            height: fit-content;
+            top: 84px;
+            border: 1px solid var(--border);
         }
-
+        .filter-panel h3 { margin: 0 0 16px; font-size: 15px; font-weight: 700; color: var(--text); }
         .filter-panel label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            color: #555;
-            margin: 12px 0 5px 0;
+            color: var(--muted);
+            margin: 14px 0 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-
-        .filter-panel input,
-        .filter-panel select {
+        .filter-panel input, .filter-panel select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 14px;
-            margin-bottom: 5px;
+            padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            background: #fafafa;
+            transition: border 0.2s;
         }
-
-        .filter-panel .radio-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
+        .filter-panel input:focus, .filter-panel select:focus { outline: none; border-color: var(--primary); background: white; }
+        .filter-panel .radio-group { display: flex; gap: 8px; margin-bottom: 4px; }
         .filter-panel .radio-group label {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-weight: normal;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: 0;
             margin: 0;
             cursor: pointer;
+            background: #f3f4f6;
+            padding: 7px 12px;
+            border-radius: 20px;
+            border: 1.5px solid transparent;
+            transition: all 0.2s;
         }
-
+        .filter-panel .radio-group label:has(input:checked) { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
         .filter-panel .search-btn {
-            background: #dc3545;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            transition: 0.2s;
-        }
-
-        .filter-panel .search-btn:hover {
-            background: #c82333;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .page-btn {
-            padding: 7px 14px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .page-btn:hover,
-        .page-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal-box {
-            background: white;
-            border-radius: 14px;
-            padding: 30px;
-            max-width: 480px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .modal-box h3 {
-            margin: 0 0 18px 0;
-            font-size: 20px;
-            color: var(--primary);
-        }
-
-        .modal-box p {
-            margin: 8px 0;
-            font-size: 15px;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 18px;
-            font-size: 22px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: #888;
-        }
-
-        .modal-close:hover {
-            color: #333;
-        }
-
-        .status-tag {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-scheduled {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-delayed {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-cancelled {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        /* Booking Modal */
-        .book-modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .book-modal-overlay.open {
-            display: flex;
-        }
-
-        .book-modal-box {
-            background: #f5f7f9;
-            border-radius: 10px;
-            padding: 25px;
-            max-width: 900px;
-            width: 95%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .bm-layout {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            margin-top: 15px;
-        }
-
-        @media(max-width:768px) {
-            .bm-layout {
-                flex-direction: column;
-            }
-        }
-
-        .bm-left {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .bm-right {
-            width: 300px;
-            flex-shrink: 0;
-        }
-
-        .bm-panel {
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .bm-panel-header {
-            padding: 12px 18px;
-            border-bottom: 1px solid #eee;
-            background: #fffdfd;
-            color: #d9534f;
-            font-weight: bold;
+            padding: 13px;
+            border-radius: 9px;
+            font-weight: 700;
             font-size: 14px;
-        }
-
-        .bm-panel-body {
-            padding: 18px;
-        }
-
-        .bm-input-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .bm-input-group>div {
-            flex: 1;
-        }
-
-        .bm-input-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 5px;
-        }
-
-        .bm-input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 13px;
-        }
-
-        .bm-fare-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: #555;
-            font-size: 13px;
-        }
-
-        .bm-fare-total {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .bm-error {
-            color: #dc3545;
-            font-size: 13px;
-            margin-top: 10px;
-            display: none;
-            text-align: center;
-        }
-
-        /* Seat Map */
-        .seat-map-wrap {
-            margin-top: 14px;
-        }
-
-        .seat-map-wrap .sm-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .sm-selected-tag {
-            background: #e6f0ff;
-            color: var(--primary);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .seat-legend {
-            display: flex;
-            gap: 14px;
-            font-size: 11px;
-            color: #777;
-            margin-bottom: 10px;
-        }
-
-        .seat-legend span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .seat-legend i {
-            width: 14px;
-            height: 14px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .seat-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            max-height: 220px;
-            overflow-y: auto;
-            padding: 4px 2px;
-        }
-
-        .seat-row {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .seat-row-num {
-            font-size: 11px;
-            color: #aaa;
-            width: 18px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .seat-aisle {
-            width: 18px;
-            flex-shrink: 0;
-        }
-
-        .seat {
-            width: 30px;
-            height: 28px;
-            border-radius: 6px 6px 3px 3px;
-            border: none;
             cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
-            transition: all 0.15s;
-            flex-shrink: 0;
+            width: 100%;
+            margin-top: 18px;
+            transition: 0.2s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
         }
+        .filter-panel .search-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(26,86,219,0.35); }
 
-        .seat.available {
-            background: #dbeafe;
-            color: #1d4ed8;
+        /* ── BUTTONS ── */
+        .btn { padding: 10px 18px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #15803d; }
+
+        /* ── FLIGHT CARD ── */
+        .flight-card {
+            background: var(--surface);
+            padding: 20px 24px;
+            margin-bottom: 12px;
+            border-radius: var(--radius);
+            box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+            border: 1.5px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            cursor: default;
         }
+        .flight-card:hover { border-color: var(--primary); box-shadow: 0 4px 20px rgba(26,86,219,0.12); transform: translateY(-2px); }
+        .fc-col { display: flex; flex-direction: column; }
+        .fc-airline-block { display: flex; align-items: center; gap: 12px; width: 22%; }
+        .fc-time-block { text-align: center; width: 17%; }
+        .fc-line { color: #d1d5db; font-size: 11px; width: 10%; text-align: center; position: relative; }
+        .fc-line::before, .fc-line::after { content:''; display:block; height:1px; background:#e5e7eb; margin: 4px 0; }
+        .fc-price-block { font-weight: 800; font-size: 20px; color: var(--primary); width: 15%; text-align: right; }
+        .fc-price-block small { display: block; font-size: 11px; font-weight: 500; color: var(--muted); }
+        .fc-btn-block { width: 14%; text-align: right; }
 
-        .seat.available:hover {
-            background: #93c5fd;
-            transform: scale(1.1);
-        }
-
-        .seat.selected {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 2px 8px rgba(0, 94, 230, 0.4);
-        }
-
-        .seat.occupied {
-            background: #eee !important;
-            color: #ccc !important;
-            cursor: not-allowed !important;
-            opacity: 0.6;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        /* تحسين شكل بطاقة الرحلة */
+        /* ── AIRLINE LOGO ── */
         .airline-logo {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #f5f7f9 0%, #ffffff 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #e0e0e0;
-            font-weight: 800;
-            font-size: 18px;
-            color: var(--primary);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-            text-shadow: 1px 1px 0px white;
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #f8faff, #fff);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1.5px solid var(--border);
+            font-weight: 800; font-size: 15px; color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            flex-shrink: 0;
         }
 
-        /* التذييل الأكاديمي */
-        footer {
-            margin-top: 50px;
-            padding: 30px;
-            background: white;
-            border-top: 1px solid #eee;
-            text-align: center;
-            color: #888;
-            font-size: 14px;
-        }
+        /* ── STATUS TAGS ── */
+        .status-tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
+        .status-scheduled { background: #dcfce7; color: #166534; }
+        .status-delayed { background: #fef9c3; color: #854d0e; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
 
-        /* تحسين شكل أزرار الصفحات */
-        .pagination {
-            margin: 30px 0;
+        /* ── LOGIN ── */
+        .login-section {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            max-width: 420px;
+            margin: 80px auto;
+            border: 1px solid var(--border);
         }
+        .login-section h2 { margin: 0 0 6px; font-size: 24px; font-weight: 800; }
+        .login-section p { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+        .login-section input {
+            width: 100%; padding: 12px 14px; margin: 8px 0;
+            border: 1.5px solid var(--border); border-radius: 9px;
+            font-size: 14px; font-family: 'Inter', sans-serif; transition: 0.2s;
+        }
+        .login-section input:focus { outline: none; border-color: var(--primary); }
+
+        /* ── NOTIFICATION / TOAST ── */
+        .notification { display: none; padding: 14px; margin-bottom: 18px; border-radius: 9px; background: #dcfce7; color: #166534; font-weight: 600; text-align: center; }
+        .toast {
+            position: fixed; bottom: 28px; right: 28px;
+            padding: 14px 22px; border-radius: 10px;
+            font-weight: 600; font-size: 14px; color: white;
+            z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            opacity: 0; transform: translateY(16px);
+            transition: all 0.3s ease; pointer-events: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        .toast.info { background: var(--primary); }
+
+        /* ── SPINNER ── */
+        .spinner { display: flex; align-items: center; gap: 12px; color: var(--muted); padding: 30px 0; font-size: 14px; }
+        .spinner-ring { width: 22px; height: 22px; border: 3px solid #e5e7eb; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── PAGINATION ── */
+        .pagination { display: flex; justify-content: center; gap: 6px; margin-top: 24px; flex-wrap: wrap; }
+        .page-btn { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: 0.2s; font-family: 'Inter', sans-serif; }
+        .page-btn:hover, .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* ── MODALS ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: white; border-radius: 18px; padding: 32px; max-width: 500px; width: 92%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); position: relative; }
+        .modal-box h3 { margin: 0 0 18px; font-size: 20px; color: var(--primary); font-weight: 700; }
+        .modal-close { position: absolute; top: 16px; right: 18px; font-size: 22px; cursor: pointer; background: #f3f4f6; border: none; color: var(--muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .modal-close:hover { background: #e5e7eb; color: var(--text); }
+
+        /* ── BOOKING MODAL ── */
+        .book-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .book-modal-overlay.open { display: flex; }
+        .book-modal-box { background: #f8fafc; border-radius: 18px; padding: 28px; max-width: 920px; width: 95%; box-shadow: 0 24px 64px rgba(0,0,0,0.2); position: relative; max-height: 92vh; overflow-y: auto; }
+        .bm-layout { display: flex; gap: 20px; align-items: flex-start; margin-top: 16px; }
+        .bm-left { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+        .bm-right { width: 300px; flex-shrink: 0; }
+        .bm-panel { background: white; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+        .bm-panel-header { padding: 12px 18px; border-bottom: 1px solid var(--border); background: #fafafa; color: var(--primary); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bm-panel-body { padding: 18px; }
+        .bm-input-group { display: flex; gap: 12px; margin-bottom: 14px; }
+        .bm-input-group > div { flex: 1; }
+        .bm-input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+        .bm-input-group input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 13px; font-family: 'Inter', sans-serif; transition: 0.2s; }
+        .bm-input-group input:focus { outline: none; border-color: var(--primary); }
+        .bm-fare-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: var(--muted); font-size: 13px; }
+        .bm-fare-total { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--border); font-size: 17px; font-weight: 800; color: var(--text); }
+        .bm-error { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; text-align: center; font-weight: 600; }
+
+        /* ── SEAT MAP ── */
+        .seat-map-wrap { margin-top: 12px; }
+        .seat-map-wrap .sm-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .sm-selected-tag { background: var(--primary-light); color: var(--primary); padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .seat-legend { display: flex; gap: 14px; font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+        .seat-legend span { display: flex; align-items: center; gap: 5px; }
+        .seat-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+        .seat-grid { display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto; padding: 4px 2px; }
+        .seat-row { display: flex; align-items: center; gap: 4px; }
+        .seat-row-num { font-size: 11px; color: #d1d5db; width: 18px; text-align: center; flex-shrink: 0; }
+        .seat-aisle { width: 18px; flex-shrink: 0; }
+        .seat { width: 30px; height: 28px; border-radius: 6px 6px 3px 3px; border: none; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.15s; flex-shrink: 0; }
+        .seat.available { background: #dbeafe; color: #1d4ed8; }
+        .seat.available:hover { background: #93c5fd; transform: scale(1.1); }
+        .seat.selected { background: var(--primary); color: white; transform: scale(1.1); box-shadow: 0 2px 8px rgba(26,86,219,0.4); }
+        .seat.occupied { background: #e5e7eb !important; color: #d1d5db !important; cursor: not-allowed !important; opacity: 0.7; transform: none !important; box-shadow: none !important; }
+
+        /* ── BOOKINGS PANEL ── */
+        .bookings-panel { width: 100%; max-width: 920px; margin: 0 auto; background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; border: 1px solid var(--border); }
+        .bookings-panel h2 { font-size: 22px; margin: 0 0 20px; padding-bottom: 16px; border-bottom: 2px solid var(--bg); font-weight: 800; }
+        .booking-item { border-radius: 10px; padding: 16px; margin-bottom: 12px; font-size: 13px; }
+        .booking-item .b-route { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+        .booking-item .b-detail { color: var(--muted); margin: 3px 0; }
+        .booking-item .b-badge { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+
+        /* ── SECTION HEADER ── */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-header h2 { margin: 0; font-size: 20px; font-weight: 800; }
+
+        /* ── FOOTER ── */
+        footer { margin-top: 60px; padding: 32px; background: var(--navy); text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; }
+        footer strong { color: white; }
     </style>
+
+
+
+
+
+
 </head>
 
 <body>
@@ -749,7 +308,7 @@
 
     <div class="header" id="main-header" style="display:none;">
         <div style="display:flex; align-items:center;">
-            <h1>FlightBook</h1>
+            <h1>Flight<span>Book</span></h1>
             <div class="nav-tabs">
                 <button class="nav-tab active" id="tab-btn-home" onclick="switchMainTab('home')">Home</button>
                 <button class="nav-tab" id="tab-btn-bookings" onclick="switchMainTab('bookings')">My Bookings</button>
@@ -923,7 +482,9 @@
     <div class="container">
         <!-- Login / Register -->
         <div class="login-section" id="login-box">
-            <div style="display:flex; margin-bottom:20px; border-bottom:2px solid #eee;">
+            <h2>Welcome Back</h2>
+            <p>Access your bookings and find new adventures.</p>
+            <div style="display:flex; margin-bottom:20px; border-bottom:1.5px solid var(--border);">
                 <button id="tab-login" onclick="switchAuthTab('login')"
                     style="flex:1;padding:10px;border:none;background:none;font-weight:bold;font-size:14px;cursor:pointer;color:var(--primary);border-bottom:3px solid var(--primary);">Login</button>
                 <button id="tab-register" onclick="switchAuthTab('register')"
@@ -952,6 +513,7 @@
             <div id="tab-content-home" class="dashboard-layout">
                 <!-- Filter Panel -->
                 <div class="filter-panel">
+                    <h3>Find Your Flight</h3>
                     <div class="radio-group">
                         <label><input type="radio" name="trip_type" value="one-way" checked
                                 onchange="toggleReturnDate()"> One-way</label>
@@ -1259,7 +821,7 @@
 
             if (!flights.length) {
                 header.style.display = 'none';
-                container.innerHTML = '<p>No flights match your search.</p>';
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--muted); background:white; border-radius:12px; border:1px solid var(--border);">No flights match your search.</div>';
                 return;
             }
 
@@ -1269,7 +831,7 @@
             var page = flights.slice(start, start + PAGE_SIZE);
 
             const airlineColors = {
-                'Saudia': '#006a4e',
+                'Saudia': '#1a56db',
                 'Flynas': '#63af31',
                 'Emirates': '#d71921',
                 'Qatar Airways': '#8a1538',
@@ -1291,107 +853,91 @@
                 if (item.isRoundTrip) {
                     var outFlight = item.outbound;
                     var inFlight = item.inbound;
+                    var outBrandColor = airlineColors[outFlight.airline] || 'var(--primary)';
+                    var inBrandColor = airlineColors[inFlight.airline] || 'var(--primary)';
 
-                    var outDepTime = formatTime(outFlight.departure_time);
-                    var outArrTime = formatTime(outFlight.arrival_time);
-                    var inDepTime = formatTime(inFlight.departure_time);
-                    var inArrTime = formatTime(inFlight.arrival_time);
-
-                    var outBrandColor = airlineColors[outFlight.airline] || '#005ce6';
-                    var outShortName = outFlight.airline.substring(0, 2).toUpperCase();
-                    var outLogoHtml = `<span style="color: ${outBrandColor}">${outShortName}</span>`;
-
-                    var inBrandColor = airlineColors[inFlight.airline] || '#005ce6';
-                    var inShortName = inFlight.airline.substring(0, 2).toUpperCase();
-                    var inLogoHtml = `<span style="color: ${inBrandColor}">${inShortName}</span>`;
-
-                    card.innerHTML =
-                        '<div style="flex:1; display:flex; flex-direction:column; gap:10px; border-right:1px solid #eee; padding-right:15px; margin-right:15px;">' +
-                        '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                        '<div class="fc-airline-block" style="width:30%;">' +
-                        `<div class="airline-logo" style="border-bottom: 3px solid ${outBrandColor};">` + outLogoHtml + '</div>' +
-                        '<div class="fc-col">' +
-                        '<div style="font-weight:bold; font-size:13px; color:#333;">' + outFlight.airline + '</div>' +
-                        '<div style="font-size:11px; color:#888;">' + outFlight.flight_number + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="fc-time-block" style="width:25%;">' +
-                        '<div style="font-weight:bold; font-size:15px; color:#333;">' + outDepTime + '</div>' +
-                        '<div style="font-size:11px; color:#888;">' + outFlight.origin + '</div>' +
-                        '</div>' +
-                        '<div class="fc-line" style="width:15%;">✈</div>' +
-                        '<div class="fc-time-block" style="width:25%;">' +
-                        '<div style="font-weight:bold; font-size:15px; color:#333;">' + outArrTime + '</div>' +
-                        '<div style="font-size:11px; color:#888;">' + outFlight.destination + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                        '<div class="fc-airline-block" style="width:30%;">' +
-                        `<div class="airline-logo" style="border-bottom: 3px solid ${inBrandColor};">` + inLogoHtml + '</div>' +
-                        '<div class="fc-col">' +
-                        '<div style="font-weight:bold; font-size:13px; color:#333;">' + inFlight.airline + '</div>' +
-                        '<div style="font-size:11px; color:#888;">' + inFlight.flight_number + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="fc-time-block" style="width:25%;">' +
-                        '<div style="font-weight:bold; font-size:15px; color:#333;">' + inDepTime + '</div>' +
-                        '<div style="font-size:11px; color:#888;">' + inFlight.origin + '</div>' +
-                        '</div>' +
-                        '<div class="fc-line" style="width:15%;">✈</div>' +
-                        '<div class="fc-time-block" style="width:25%;">' +
-                        '<div style="font-weight:bold; font-size:15px; color:#333;">' + inArrTime + '</div>' +
-                        '<div style="font-size:11px; color:#888;">' + inFlight.destination + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div style="width:120px; text-align:right; display:flex; flex-direction:column; justify-content:center;">' +
-                        '<div style="font-size:12px; color:#888; font-weight:normal; margin-bottom:2px;">Price starts from</div>' +
-                        '<div style="font-weight:bold; font-size:18px; color:#333; margin-bottom:10px;">SAR ' + item.price.toFixed(2) + '</div>' +
-                        '<button class="btn" style="background:#dc3545; color:white; padding:10px 15px; border-radius:5px; font-weight:bold; font-size:13px;" onclick="createRoundTripBooking(' + outFlight.id + ', ' + inFlight.id + ')">Book Trip</button>' +
-                        '</div>';
+                    card.innerHTML = `
+                        <div style="flex:1; display:flex; flex-direction:column; gap:12px; border-right:1px solid var(--border); padding-right:20px; margin-right:20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="fc-airline-block" style="width:30%;">
+                                    <div class="airline-logo" style="border-bottom: 2px solid ${outBrandColor};">${outFlight.airline.substring(0, 2).toUpperCase()}</div>
+                                    <div class="fc-col">
+                                        <div style="font-weight:700; font-size:14px;">${outFlight.airline}</div>
+                                        <div style="font-size:11px; color:var(--muted);">${outFlight.flight_number}</div>
+                                    </div>
+                                </div>
+                                <div class="fc-time-block" style="width:25%;">
+                                    <div style="font-weight:700; font-size:16px;">${formatTime(outFlight.departure_time)}</div>
+                                    <div style="font-size:11px; color:var(--muted);">${outFlight.origin_code}</div>
+                                </div>
+                                <div class="fc-line" style="width:15%;">✈</div>
+                                <div class="fc-time-block" style="width:25%;">
+                                    <div style="font-weight:700; font-size:16px;">${formatTime(outFlight.arrival_time)}</div>
+                                    <div style="font-size:11px; color:var(--muted);">${outFlight.destination_code}</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="fc-airline-block" style="width:30%;">
+                                    <div class="airline-logo" style="border-bottom: 2px solid ${inBrandColor};">${inFlight.airline.substring(0, 2).toUpperCase()}</div>
+                                    <div class="fc-col">
+                                        <div style="font-weight:700; font-size:14px;">${inFlight.airline}</div>
+                                        <div style="font-size:11px; color:var(--muted);">${inFlight.flight_number}</div>
+                                    </div>
+                                </div>
+                                <div class="fc-time-block" style="width:25%;">
+                                    <div style="font-weight:700; font-size:16px;">${formatTime(inFlight.departure_time)}</div>
+                                    <div style="font-size:11px; color:var(--muted);">${inFlight.origin_code}</div>
+                                </div>
+                                <div class="fc-line" style="width:15%;">✈</div>
+                                <div class="fc-time-block" style="width:25%;">
+                                    <div style="font-weight:700; font-size:16px;">${formatTime(inFlight.arrival_time)}</div>
+                                    <div style="font-size:11px; color:var(--muted);">${inFlight.destination_code}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fc-price-block">
+                            <small>Total Fare</small>
+                            SAR ${item.price.toFixed(2)}
+                            <button class="btn btn-primary" style="margin-top:12px; width:100%;" onclick="createRoundTripBooking(${outFlight.id}, ${inFlight.id})">Book Trip</button>
+                        </div>`;
                 } else {
                     var flight = item;
-                    var depTime = formatTime(flight.departure_time);
-                    var arrTime = formatTime(flight.arrival_time);
-
-                    var brandColor = airlineColors[flight.airline] || '#005ce6';
-                    var shortName = flight.airline.substring(0, 2).toUpperCase();
-                    var logoHtml = `<span style="color: ${brandColor}">${shortName}</span>`;
-
-                    card.innerHTML =
-                        '<div class="fc-airline-block">' +
-                        `<div class="airline-logo" style="border-bottom: 3px solid ${brandColor};">` + logoHtml + '</div>' +
-                        '<div class="fc-col">' +
-                        '<div style="font-weight:bold; font-size:15px; color:#333;">' + flight.airline + '</div>' +
-                        '<div style="font-size:12px; color:#888;">' + flight.flight_number + '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="fc-time-block">' +
-                        '<div style="font-weight:bold; font-size:18px; color:#333;">' + depTime + '</div>' +
-                        '<div style="font-size:12px; color:#888;">' + flight.origin + ' (' + flight.origin_code + ')</div>' +
-                        '</div>' +
-                        '<div class="fc-line">✈</div>' +
-                        '<div class="fc-time-block">' +
-                        '<div style="font-weight:bold; font-size:18px; color:#333;">' + arrTime + '</div>' +
-                        '<div style="font-size:12px; color:#888;">' + flight.destination + ' (' + flight.destination_code + ')</div>' +
-                        '</div>' +
-                        '<div class="fc-price-block">' +
-                        '<div style="font-size:12px; color:#888; font-weight:normal;">Price starts from</div>' +
-                        'SAR ' + flight.price +
-                        '</div>' +
-                        '<div class="fc-btn-block">' +
-                        '<button class="btn btn-primary" style="background:#dc3545; border:none; border-radius:5px; padding:10px 15px; font-weight:bold; font-size:13px;" onclick="createBooking(' + flight.id + ')">Book Flight</button>' +
-                        '</div>';
+                    var brandColor = airlineColors[flight.airline] || 'var(--primary)';
+                    card.innerHTML = `
+                        <div class="fc-airline-block">
+                            <div class="airline-logo" style="border-bottom: 2px solid ${brandColor};">${flight.airline.substring(0, 2).toUpperCase()}</div>
+                            <div class="fc-col">
+                                <div style="font-weight:700; font-size:15px;">${flight.airline}</div>
+                                <div style="font-size:11px; color:var(--muted);">${flight.flight_number}</div>
+                            </div>
+                        </div>
+                        <div class="fc-time-block">
+                            <div style="font-weight:700; font-size:18px;">${formatTime(flight.departure_time)}</div>
+                            <div style="font-size:12px; color:var(--muted);">${flight.origin_code}</div>
+                        </div>
+                        <div class="fc-line">✈</div>
+                        <div class="fc-time-block">
+                            <div style="font-weight:700; font-size:18px;">${formatTime(flight.arrival_time)}</div>
+                            <div style="font-size:12px; color:var(--muted);">${flight.destination_code}</div>
+                        </div>
+                        <div class="fc-price-block">
+                            <small>Starts from</small>
+                            SAR ${flight.price}
+                        </div>
+                        <div class="fc-btn-block">
+                            <button class="btn btn-primary" onclick="createBooking(${flight.id})">Book Flight</button>
+                        </div>`;
                 }
 
                 container.appendChild(card);
             });
+
             for (var i = 1; i <= totalPages; i++) {
-                (function (page) {
+                (function (p) {
                     var btn = document.createElement('button');
-                    btn.className = 'page-btn' + (page === currentPage ? ' active' : '');
-                    btn.textContent = page;
-                    btn.onclick = function () { currentPage = page; renderFlightsPage(flights); };
+                    btn.className = 'page-btn' + (p === currentPage ? ' active' : '');
+                    btn.textContent = p;
+                    btn.onclick = function () { currentPage = p; renderFlightsPage(flights); };
                     pagination.appendChild(btn);
                 })(i);
             }
@@ -1948,8 +1494,13 @@
     </script>
 
     <footer>
-        <p><strong>Web Based Systems Project - 2026</strong></p>
-        <p>King Faisal University - College of Computer Sciences and Information Technology</p>
+        <div class="container">
+            <p><strong>Web Based Systems Project - 2026</strong></p>
+            <p>King Faisal University - College of Computer Sciences and Information Technology</p>
+            <hr style="opacity: 0.1; margin: 15px 0;">
+            <p>&copy; 2026 <strong>FlightBook</strong>. All rights reserved.</p>
+            <p style="font-size: 11px; margin-top: 5px; opacity: 0.6;">Your premium gateway to world exploration.</p>
+        </div>
     </footer>
 </body>
 
